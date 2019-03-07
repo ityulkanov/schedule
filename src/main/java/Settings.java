@@ -1,6 +1,4 @@
 public class Settings {
-
-    final static String PATH = "C:\\input.txt";
     final static int TIME_ADJUSTMENT = 6;
     final static int MAX_TIME_AVAILABLE = 10;
     final static int MIN_TIME_AVAILABLE = 0;

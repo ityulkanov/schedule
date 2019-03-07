@@ -71,7 +71,7 @@ public class ScheduleRequest implements Comparable <ScheduleRequest> {
     }
     //Class methods
     public static List<ScheduleRequest> scheduleListCreator(String inputData){
-        List<ScheduleRequest> scheduleRequests = new ArrayList<ScheduleRequest>();
+        List<ScheduleRequest> scheduleRequests = new ArrayList<>();
         //Receive input and store it into our array of objects
         Scanner scanner = new Scanner(inputData);
         while(scanner.hasNext()) {

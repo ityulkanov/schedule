@@ -20,7 +20,6 @@ public class Schedule {
         if (schedule == null){
             schedule = new Schedule();
         }
-
         return schedule;
     }
 
@@ -34,7 +33,7 @@ public class Schedule {
             }
         }
     }
-
+    //printout of the data into console. Left for testing.
     public void printSchedule (List<ScheduleRequest> requests) {
         for (ScheduleRequest scheduleRequest : requests) {
             if (scheduleRequest.isSuccessful()) {
@@ -45,7 +44,7 @@ public class Schedule {
             }
         }
     }
-
+    //creating a json file from schedule events.
     public void convertToJson(List<ScheduleRequest> requests) {
         List<ScheduleRequest> successfulEntries = new ArrayList<>();
         for (ScheduleRequest scheduleRequest : requests) {
@@ -57,7 +56,7 @@ public class Schedule {
         Collections.sort(successfulEntries);
 
         try {
-            objectMapper.writeValue(new File("scheduleRequest.json"), successfulEntries);
+            objectMapper.writeValue(new File("calendar.json"), successfulEntries);
         } catch (IOException e) {
             e.printStackTrace();
         }

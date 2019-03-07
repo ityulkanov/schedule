@@ -5,13 +5,17 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 
-public class ScheduleRequest implements Comparable <ScheduleRequest>{
+public class ScheduleRequest implements Comparable <ScheduleRequest> {
+
+    //Variables
     private Long timeSubmitted;
     private String userId;
     private Long meetingStartTime;
-    private Long meetingEndTime;
+    private int meetingDuration;
     private boolean successful;
+    private Long meetingRealtime;
 
+    //Getters & setters
     public boolean isSuccessful() {
         return successful;
     }
@@ -44,17 +48,26 @@ public class ScheduleRequest implements Comparable <ScheduleRequest>{
         this.meetingStartTime = meetingStartTime;
     }
 
-    public Long getMeetingEndTime() {
-        return meetingEndTime;
+    public int getMeetingDuration() {
+        return meetingDuration;
     }
 
-    public void setMeetingEndTime(Long meetingEndTime) {
-        this.meetingEndTime = meetingEndTime;
+    public void setMeetingDuration(int meetingDuration) {
+        this.meetingDuration = meetingDuration;
     }
 
+    public Long getMeetingRealtime() {
+        return meetingRealtime;
+    }
+
+    public void setMeetingRealtime(Long meetingRealtime) {
+        this.meetingRealtime = meetingRealtime;
+    }
+
+    //Constructor
     public ScheduleRequest() {
     }
-
+    //Class methods
     public static List<ScheduleRequest> scheduleListCreator(Scanner inputData){
         List<ScheduleRequest> scheduleRequests = new ArrayList<ScheduleRequest>();
         //Receive input and store it into our array of objects
@@ -70,19 +83,19 @@ public class ScheduleRequest implements Comparable <ScheduleRequest>{
 
     private void scheduleRequestCreator(String requestMessage){
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        SimpleDateFormat simpleTimeFormat = new SimpleDateFormat("hh:mm");
-
-
+        SimpleDateFormat simpleTimeFormat = new SimpleDateFormat("HH:mm");
         String[] data = requestMessage.split(" ");
 
         try {
             setTimeSubmitted(simpleDateFormat.parse(data[0]).getTime() + simpleTimeFormat.parse(data[1]).getTime());
             setUserId(data[2]);
             setMeetingStartTime(simpleDateFormat.parse(data[3]).getTime() + simpleTimeFormat.parse(data[4]).getTime());
+            setMeetingRealtime(getMeetingStartTime() + 3 * 3600000);
         } catch (ParseException e) {
+            System.out.println("Parsing was unsuccessful, check the validity of data");
             e.printStackTrace();
         }
-        setMeetingEndTime(Long.valueOf(data[5]) * 6000000 + getMeetingStartTime());
+        setMeetingDuration(Integer.parseInt(data[5]));
     }
 
     @Override
@@ -91,21 +104,17 @@ public class ScheduleRequest implements Comparable <ScheduleRequest>{
                 "timeSubmitted=" + timeSubmitted +
                 ", userId='" + userId + '\'' +
                 ", meetingStartTime=" + meetingStartTime +
-                ", meetingEndTime=" + meetingEndTime +
+                ", meetingDuration=" + meetingDuration +
                 '}';
     }
-
-
 
     public int compareTo(ScheduleRequest object) {
         if (this.getTimeSubmitted() < object.getTimeSubmitted()) {
             return -1;
-
         } else if (this.getTimeSubmitted() > object.getTimeSubmitted()) {
             return 1;
         } else {
             return 0;
         }
     }
-
 }

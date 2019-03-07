@@ -1,4 +1,9 @@
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.TimeZone;
 
 public class Schedule {
     private static volatile Schedule schedule = new Schedule();
@@ -19,7 +24,30 @@ public class Schedule {
         return schedule;
     }
 
-    public boolean bookDate(String date, String time) {
+    public void requestSubmitter(List<ScheduleRequest> requests) {
+        for (ScheduleRequest scheduleRequest : requests) {
+            Date meetingDate = new Date(scheduleRequest.getMeetingStartTime());
+
+            DateFormat df = new SimpleDateFormat("dd");
+            DateFormat tf = new SimpleDateFormat("HH");
+            if (bookDate(df.format(meetingDate), tf.format(meetingDate))) {
+                scheduleRequest.setSuccessful(true);
+            }
+        }
+    }
+
+    public void printSchedule (List<ScheduleRequest> requests) {
+        for (ScheduleRequest scheduleRequest : requests) {
+            if (scheduleRequest.isSuccessful()) {
+                Date meetingStartTime = new Date(scheduleRequest.getMeetingStartTime());
+                DateFormat dateBooked = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                dateBooked.setTimeZone(TimeZone.getTimeZone("Europe/Moscow"));
+                System.out.println(scheduleRequest.getUserId() + " has booked conf for " + dateBooked.format(meetingStartTime));
+            }
+        }
+    }
+
+    private boolean bookDate(String date, String time) {
         int dateOfBooking = Integer.parseInt(date);
         //current dates are off by 3 hours. But we are adjusting it to fit our schedule as well:
         int hourOfBooking = Integer.parseInt(time) - 6;

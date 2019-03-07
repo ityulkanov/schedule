@@ -1,4 +1,9 @@
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Scanner;
 
 public class ScheduleRequest implements Comparable <ScheduleRequest>{
     private Long timeSubmitted;
@@ -50,16 +55,33 @@ public class ScheduleRequest implements Comparable <ScheduleRequest>{
     public ScheduleRequest() {
     }
 
-    public void scheduleRequestCreator(String requestMessage) throws Exception{
+    public static List<ScheduleRequest> scheduleListCreator(Scanner inputData){
+        List<ScheduleRequest> scheduleRequests = new ArrayList<ScheduleRequest>();
+        //Receive input and store it into our array of objects
+        while(inputData.hasNext()) {
+            String requestMessage = inputData.nextLine();
+            ScheduleRequest scheduleRequest = new ScheduleRequest();
+            scheduleRequest.scheduleRequestCreator(requestMessage);
+            scheduleRequests.add(scheduleRequest);
+        }
+        Collections.sort(scheduleRequests);
+        return scheduleRequests;
+    }
+
+    private void scheduleRequestCreator(String requestMessage){
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         SimpleDateFormat simpleTimeFormat = new SimpleDateFormat("hh:mm");
 
 
         String[] data = requestMessage.split(" ");
 
-        setTimeSubmitted(simpleDateFormat.parse(data[0]).getTime() + simpleTimeFormat.parse(data[1]).getTime());
-        setUserId(data[2]);
-        setMeetingStartTime(simpleDateFormat.parse(data[3]).getTime() + simpleTimeFormat.parse(data[4]).getTime());
+        try {
+            setTimeSubmitted(simpleDateFormat.parse(data[0]).getTime() + simpleTimeFormat.parse(data[1]).getTime());
+            setUserId(data[2]);
+            setMeetingStartTime(simpleDateFormat.parse(data[3]).getTime() + simpleTimeFormat.parse(data[4]).getTime());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         setMeetingEndTime(Long.valueOf(data[5]) * 6000000 + getMeetingStartTime());
     }
 

@@ -1,8 +1,10 @@
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.io.File;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public class Schedule {
     private static volatile Schedule schedule = new Schedule();
@@ -27,8 +29,6 @@ public class Schedule {
             Date meetingDate = new Date(scheduleRequest.getMeetingStartTime());
             DateFormat df = new SimpleDateFormat("dd");
             DateFormat tf = new SimpleDateFormat("HH");
-            DateFormat ml = new SimpleDateFormat("hh");
-
             if (bookDate(df.format(meetingDate), tf.format(meetingDate), scheduleRequest.getMeetingDuration())) {
                 scheduleRequest.setSuccessful(true);
             }
@@ -44,6 +44,24 @@ public class Schedule {
                         + " for " + scheduleRequest.getMeetingDuration() + " hours ");
             }
         }
+    }
+
+    public void convertToJson(List<ScheduleRequest> requests) {
+        List<ScheduleRequest> successfulEntries = new ArrayList<>();
+        for (ScheduleRequest scheduleRequest : requests) {
+            if (scheduleRequest.isSuccessful()){
+                successfulEntries.add(scheduleRequest);
+            }
+        }
+        ObjectMapper objectMapper = new ObjectMapper();
+        Collections.sort(successfulEntries);
+
+        try {
+            objectMapper.writeValue(new File("scheduleRequest.json"), successfulEntries);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     private boolean bookDate(String date, String time, int duration) {

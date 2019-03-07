@@ -1,3 +1,5 @@
+import java.io.DataInputStream;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -68,11 +70,12 @@ public class ScheduleRequest implements Comparable <ScheduleRequest> {
     public ScheduleRequest() {
     }
     //Class methods
-    public static List<ScheduleRequest> scheduleListCreator(Scanner inputData){
+    public static List<ScheduleRequest> scheduleListCreator(String inputData){
         List<ScheduleRequest> scheduleRequests = new ArrayList<ScheduleRequest>();
         //Receive input and store it into our array of objects
-        while(inputData.hasNext()) {
-            String requestMessage = inputData.nextLine();
+        Scanner scanner = new Scanner(inputData);
+        while(scanner.hasNext()) {
+            String requestMessage = scanner.nextLine();
             ScheduleRequest scheduleRequest = new ScheduleRequest();
             scheduleRequest.scheduleRequestCreator(requestMessage);
             scheduleRequests.add(scheduleRequest);
@@ -80,8 +83,21 @@ public class ScheduleRequest implements Comparable <ScheduleRequest> {
         Collections.sort(scheduleRequests);
         return scheduleRequests;
     }
-
-    private void scheduleRequestCreator(String requestMessage){
+    //Fetching data from remote
+    public static StringBuilder urlDataFetch(DataInputStream dis) {
+        StringBuilder inputLine = new StringBuilder();
+        String tmp;
+        try {
+            while ((tmp = dis.readLine()) != null) {
+                inputLine.append(tmp);
+                inputLine.append("\n");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return inputLine;
+    }
+        private void scheduleRequestCreator(String requestMessage){
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         SimpleDateFormat simpleTimeFormat = new SimpleDateFormat("HH:mm");
         String[] data = requestMessage.split(" ");
